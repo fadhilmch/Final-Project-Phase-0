@@ -5,6 +5,9 @@ var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 
 var wordList = ['declaration', 'bootcamp', 'programming', 'development', 'deployment', 'algorithm', 'statement', 'arithmatic', 'argument', 'assembly', 'backend', 'binary', 'bitwise', 'boolean', 'compile', 'conditional', 'constructor', 'dataflow', 'debugging', 'declaration', 'decrement', 'database', 'encapsulation', 'exception', 'floating', 'framework', 'inheritance', 'invalid', 'syntax', 'operator', 'polymorphism', 'procedure', 'pseudocode', 'recursion', 'recursive', 'software', 'buffer', 'character', 'command', 'compilation', 'computer', 'concurrency', 'compiler', 'developer', 'programmer', 'dynamic', 'static', 'element', 'increment', 'instance', 'integer', 'iteration', 'private', 'programmable', 'pseudolanguage', 'sequence'];
 
+var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+      'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+      't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 var showLives = document.getElementById('mylives');
 var word;
@@ -13,6 +16,7 @@ var answerProgress = [];
 var lives;
 var counter;
 var wordLength;
+var dumbWord = [];
 
 
 var result = function() {
@@ -49,6 +53,7 @@ var live = function() {
     if (counter === answerProgress.length) {
       showLives.innerHTML = "You Win!";
       alert("\n===================================\n\n\t\t\tCONGRATULATION!\n\n==================================\n\n\n You can solve the word!");
+      reset();
     }
   }
   console.log("Counter: "+counter+" "+answerProgress.length);
@@ -64,22 +69,34 @@ var canvas = function() {
 };
 
 var submit = function() {
-  for (var i = 0; i < word.length; i++) {
-    if (word[i] === document.getElementById('answer').value) {
-      if(answerProgress[i].innerHTML=='_')
-        counter++;
-      answerProgress[i].innerHTML = document.getElementById('answer').value;
+  if((/[A-Za-z]/).test(document.getElementById('answer').value)&&document.getElementById('answer').value.length==1){
+    document.getElementById('alphabet').children[0].children[document.getElementById('answer').value.charCodeAt()-97].setAttribute("class", "active");
+    //if(dumbWord.indexOf(document.getElementById('answer').value)==-1)
+    dumbWord.push(document.getElementById('answer').value);
+    console.log("Dumb: "+dumbWord+" "+dumbWord.indexOf(document.getElementById('answer').value));
+    for (var i = 0; i < word.length; i++) {
+      if (word[i] === document.getElementById('answer').value) {
+        if(answerProgress[i].innerHTML=='_')
+          counter++;
+        answerProgress[i].innerHTML = document.getElementById('answer').value;
+      }
+    }
+    var j = (word.indexOf(document.getElementById('answer').value));
+    document.getElementById('answer').value = '';
+    if (j === -1 &&dumbWord.indexOf(document.getElementById('answer').value)==-1) {
+      lives -= 1;
+      live();
+      showStickman();
+    } else {
+      live();
     }
   }
-  var j = (word.indexOf(document.getElementById('answer').value));
-  document.getElementById('answer').value = '';
-  if (j === -1) {
-    lives -= 1;
-    live();
-    showStickman();
-  } else {
-    live();
+  else{
+    alert("Please give input only alphabet!");
+    document.getElementById('answer').value = '';
   }
+
+
 }
 
 var showStickman = function() {
@@ -113,49 +130,44 @@ var frame = function() {
 };
 
 var torso = function() {
-  for(var i=0;i<1;i++)
-  {
-    draw(160+i, 36, 160+i, 70);
-  }
+    draw(160, 36, 160, 70);
 };
 
 var rightArm = function() {
-  for(var i=0;i<1;i++)
-  {
-    draw(160, 46+i, 200, 50+i);
-  }
-
+    draw(160, 46, 200, 50);
 };
 
 var leftArm = function() {
-  for(var i=0;i<1;i++)
-  {
-    draw(160, 46+i, 120, 50+i);
-  }
-
+    draw(160, 46, 120, 50);
 };
 
 var rightLeg = function() {
-  for(var i=0;i<1;i++)
-  {
-    draw(160, 70+i, 200, 100+i);
-  }
-
+    draw(160, 70, 200, 100);
 };
 
 var leftLeg = function() {
-  for(var i=0;i<1;i++)
-  {
-    draw(160, 70+i, 120, 100+i);
-  }
-
+    draw(160, 70, 120, 100);
 };
 
 drawArray = [rightLeg, leftLeg, rightArm, leftArm, torso, head,frame];
 
+var alphabetShow = function () {
+  alphabetGuessed = document.getElementById('alphabet');
+  letters = document.createElement('ul');
 
-document.getElementById('reset').onclick = function() {
+  for (var i = 0; i < alphabet.length; i++) {
+    letters.id = 'alphabet';
+    list = document.createElement('li');
+    list.id = 'letter';
+    list.innerHTML = alphabet[i];
+    alphabetGuessed.appendChild(letters);
+    letters.appendChild(list);
+  }
+}
+
+var reset = function() {
   correct.parentNode.removeChild(correct);
+  letters.parentNode.removeChild(letters);
   context.clearRect(0, 0, 400, 400);
   counter = 0;
   play();
@@ -169,6 +181,8 @@ document.getElementById("answer")
     }
 });
 
+
+
 var play = function() {
   word = wordList[Math.floor(Math.random() * wordList.length)];
   wordLength = word.length;
@@ -176,7 +190,7 @@ var play = function() {
   answerProgress = [];
   lives = 7;
   counter = 0;
-
+  alphabetShow();
   result();
   live();
   canvas();
