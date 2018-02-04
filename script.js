@@ -9,7 +9,7 @@ var wordList = ['declaration', 'bootcamp', 'programming', 'development', 'deploy
 var showLives = document.getElementById('mylives');
 var word;
 var answerOutput = [];
-var geusses = [];
+var answerProgress = [];
 var lives;
 var counter;
 var wordLength;
@@ -20,9 +20,11 @@ var result = function() {
   correct = document.createElement('ul');
   if (wordLength < 7) {
     var randomIndex = Math.floor(Math.random() * wordLength);
+    counter ++;
   } else {
     var randomIndex = Math.floor(Math.random() * (wordLength - 5) + 5);
     var randomIndex2 = Math.floor(Math.random() * 5);
+    counter += 2;
   }
   for (var i = 0; i < wordLength; i++) {
     correct.setAttribute('id', 'my-word');
@@ -32,7 +34,7 @@ var result = function() {
       guess.innerHTML = "_";
     else
       guess.innerHTML = word[i];
-    geusses.push(guess);
+    answerProgress.push(guess);
     wordHolder.appendChild(correct);
     correct.appendChild(guess);
   }
@@ -43,11 +45,13 @@ var live = function() {
   if (lives < 1) {
     showLives.innerHTML = "Game Over";
   }
-  for (var i = 0; i < geusses.length; i++) {
-    if (counter === geusses.length) {
+  for (var i = 0; i < answerProgress.length; i++) {
+    if (counter === answerProgress.length) {
       showLives.innerHTML = "You Win!";
+      alert("\n===================================\n\n\t\t\tCONGRATULATION!\n\n==================================\n\n\n You can solve the word!");
     }
   }
+  console.log("Counter: "+counter+" "+answerProgress.length);
 }
 
 
@@ -62,7 +66,9 @@ var canvas = function() {
 var submit = function() {
   for (var i = 0; i < word.length; i++) {
     if (word[i] === document.getElementById('answer').value) {
-      geusses[i].innerHTML = document.getElementById('answer').value;
+      if(answerProgress[i].innerHTML=='_')
+        counter++;
+      answerProgress[i].innerHTML = document.getElementById('answer').value;
     }
   }
   var j = (word.indexOf(document.getElementById('answer').value));
@@ -86,7 +92,7 @@ var head = function() {
   myStickman = document.getElementById("stickman");
   context = myStickman.getContext('2d');
   context.beginPath();
-  context.arc(60, 25, 10, 0, Math.PI * 2, true);
+  context.arc(160, 25, 10, 0, Math.PI * 2, true);
   context.stroke();
 }
 
@@ -97,30 +103,52 @@ var draw = function($pathFromx, $pathFromy, $pathTox, $pathToy) {
 }
 
 var frame = function() {
-  draw(0, 150, 150, 150);
-  draw(10, 0, 10, 600);
-  draw(0, 5, 70, 5);
-  draw(60, 5, 60, 15);
+  for(var i=0;i<4;i++)
+  {
+    draw(0, 150-i, 300, 150-i);
+    draw(110+i, 0, 110+1, 600);
+    draw(100, 5+i, 170, 5+i);
+    draw(160+i, 5, 160+i, 15);
+  }
 };
 
 var torso = function() {
-  draw(60, 36, 60, 70);
+  for(var i=0;i<1;i++)
+  {
+    draw(160+i, 36, 160+i, 70);
+  }
 };
 
 var rightArm = function() {
-  draw(60, 46, 100, 50);
+  for(var i=0;i<1;i++)
+  {
+    draw(160, 46+i, 200, 50+i);
+  }
+
 };
 
 var leftArm = function() {
-  draw(60, 46, 20, 50);
+  for(var i=0;i<1;i++)
+  {
+    draw(160, 46+i, 120, 50+i);
+  }
+
 };
 
 var rightLeg = function() {
-  draw(60, 70, 100, 100);
+  for(var i=0;i<1;i++)
+  {
+    draw(160, 70+i, 200, 100+i);
+  }
+
 };
 
 var leftLeg = function() {
-  draw(60, 70, 20, 100);
+  for(var i=0;i<1;i++)
+  {
+    draw(160, 70+i, 120, 100+i);
+  }
+
 };
 
 drawArray = [rightLeg, leftLeg, rightArm, leftArm, torso, head,frame];
@@ -129,15 +157,23 @@ drawArray = [rightLeg, leftLeg, rightArm, leftArm, torso, head,frame];
 document.getElementById('reset').onclick = function() {
   correct.parentNode.removeChild(correct);
   context.clearRect(0, 0, 400, 400);
+  counter = 0;
   play();
 }
 
-// Play
+document.getElementById("answer")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        document.getElementById("submit").click();
+    }
+});
+
 var play = function() {
   word = wordList[Math.floor(Math.random() * wordList.length)];
   wordLength = word.length;
   console.log(word);
-  geusses = [];
+  answerProgress = [];
   lives = 7;
   counter = 0;
 
