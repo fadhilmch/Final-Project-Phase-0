@@ -72,8 +72,6 @@ var submit = function() {
   if((/[A-Za-z]/).test(document.getElementById('answer').value)&&document.getElementById('answer').value.length==1){
     document.getElementById('alphabet').children[0].children[document.getElementById('answer').value.charCodeAt()-97].setAttribute("class", "active");
     //if(dumbWord.indexOf(document.getElementById('answer').value)==-1)
-    dumbWord.push(document.getElementById('answer').value);
-    console.log("Dumb: "+dumbWord+" "+dumbWord.indexOf(document.getElementById('answer').value));
     for (var i = 0; i < word.length; i++) {
       if (word[i] === document.getElementById('answer').value) {
         if(answerProgress[i].innerHTML=='_')
@@ -82,14 +80,15 @@ var submit = function() {
       }
     }
     var j = (word.indexOf(document.getElementById('answer').value));
-    document.getElementById('answer').value = '';
     if (j === -1 &&dumbWord.indexOf(document.getElementById('answer').value)==-1) {
+      dumbWord.push(document.getElementById('answer').value);
       lives -= 1;
       live();
       showStickman();
     } else {
       live();
     }
+    document.getElementById('answer').value = '';
   }
   else{
     alert("Please give input only alphabet!");
