@@ -44,8 +44,9 @@ var result = function() {
   }
 }
 
+
 var live = function() {
-  showLives.innerHTML = "You have " + lives + " lives left";
+  showLives.innerHTML = "You have <strong>" + lives + "</strong> lives left";
   if (lives < 1) {
     showLives.innerHTML = "Game Over";
   }
